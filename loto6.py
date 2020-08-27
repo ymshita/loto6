@@ -90,23 +90,12 @@ def get_number_set_list():
     return [color1, color2, color3, color4, color5, color6, color7]
 
 def get_ball_number_sets():
-    reds =    {1, 8, 15, 22, 29, 36, 43}
-    yellows = {2, 9, 16, 23, 30, 37}
-    beiges =  {3, 10, 17, 24, 31, 38}
-    greens =  {4, 11, 18, 25, 32, 39}
-    blues =   {5, 12, 19, 26, 33, 40}
-    navys =   {6, 13, 20, 27, 34, 41}
-    purples = {7, 14, 21, 28, 35, 42}
-
     number_set_list = get_number_set_list()
-    print("number_set_list: ", number_set_list)
-    print("number_set_list[0]: ", number_set_list[0])
     colorSet = (0, 1, 2, 3, 4, 5, 6)
     colorcombs = list(itertools.combinations(colorSet, 6))
     ball_number_sets = ()
     for colorcomb in colorcombs:
         color_list = list(colorcomb)
-        print("color_list: ", color_list)
         ball_number_sets = set(itertools.product(
             number_set_list[color_list[0]],
             number_set_list[color_list[1]],
@@ -130,11 +119,12 @@ def main():
     ex: 整列対象が　[3,8,0,4,2,5,9,1]　の時、
         => # python3 quick_sort 3 8 0 4 2 5 9 1
     """
-    seeds = [4, 5, 6, 11, 12, 13, 14, 17, 18, 19, 20, 21, 27, 28, 29, 36, 37, 38, 39, 40]
+    seeds = [4, 5, 6, 11, 12, 13, 14, 17, 18, 19, 20, 21, 27, 28, 29, 36, 37, 38, 39, 41]
 
     combinations = set(itertools.combinations(seeds, 6))
     combinationList = list(combinations)
     fixedList = []
+    ball_number_sets = list(get_ball_number_sets())
 
     for combination in combinationList:
         tmp = -1
@@ -142,7 +132,9 @@ def main():
         numArray = list(combination)
         if has_one_consecutive_numbers(numArray):
             if has_one_pair_same_last_digit_numbers(numArray):
-                fixedList.append(combination)
+                for number_set in ball_number_sets:
+                    if combination <= number_set:
+                        fixedList.append(combination)
 
     size = len(fixedList)
     print("size: ", size)
@@ -150,20 +142,15 @@ def main():
     count = 0
     total = 0
     numbers = []
-    ball_number_sets = get_ball_number_sets()
-    print("ball_number_sets", ball_number_sets)
 
     while count < 30:
         result = fixedList[random.randint(0, size-1)]
-        if result in ball_number_sets:
-            print('apply: ',result)
-            array = list(result)
-            for num in array:
-                numbers.append(num)
-                total += num
-            count += 1
-        # else:
-            # print('not apply: ', result)
+        print(result)
+        array = list(result)
+        for num in array:
+            numbers.append(num)
+            total += num
+        count += 1
 
     # average = total / len(numbers)
     # print('average: ', average)
